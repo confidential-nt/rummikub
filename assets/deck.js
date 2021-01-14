@@ -27,11 +27,15 @@ export default class Deck {
   shuffle() {
     for (let i = this.numberOfTiles - 1; i > 0; i--) {
       const newIndex = Math.floor(Math.random() * this.numberOfTiles);
-      let targetTile = this.deck[i];
-      let otherTile = this.deck[newIndex];
+      const targetTile = this.deck[i];
+      const otherTile = this.deck[newIndex];
       this.deck[i] = otherTile;
       this.deck[newIndex] = targetTile;
     }
+  }
+
+  giveTiles(number) {
+    return this.deck.splice(0, number);
   }
 }
 

@@ -9,7 +9,7 @@ export default class Deck {
   createNumberTile() {
     return values.flatMap((val) => {
       return colors.map((col) => {
-        return new Tile(val, col);
+        return new Tile(val, val, col);
       });
     });
   }
@@ -20,7 +20,7 @@ export default class Deck {
 
   createDeck() {
     const numberTile = this.createNumberTile();
-    const JOKER = [new Tile("J", "red"), new Tile("J", "black")];
+    const JOKER = [new Tile("J", 10, "red"), new Tile("J", 10, "black")];
     return numberTile.concat(numberTile).concat(JOKER);
   }
 
@@ -40,7 +40,8 @@ export default class Deck {
 }
 
 class Tile {
-  constructor(value, color) {
+  constructor(suit, value, color) {
+    this.suit = suit;
     this.value = value;
     this.color = color;
   }

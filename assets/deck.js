@@ -1,6 +1,8 @@
 const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 const colors = ["black", "red", "blue", "orange"];
 
+let id = 0;
+
 export default class Deck {
   constructor(deck = this.createDeck()) {
     this.deck = deck;
@@ -20,7 +22,7 @@ export default class Deck {
 
   createDeck() {
     const numberTile = this.createNumberTile();
-    const JOKER = [new Tile("J", 10, "red"), new Tile("J", 10, "black")];
+    const JOKER = [new Tile("J", 10, "red"), new Tile("J", 10, "black")]; //나중에 보강
     return numberTile.concat(numberTile).concat(JOKER);
   }
 
@@ -44,5 +46,7 @@ class Tile {
     this.suit = suit;
     this.value = value;
     this.color = color;
+    this.id = id;
+    id++;
   }
 }

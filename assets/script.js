@@ -11,28 +11,50 @@ let start = false;
 const deck = new Deck();
 deck.shuffle();
 
-let user = new Player(); //class로 만들어야할듯 run, group이런거 조정하려면
+let user = new Player("user");
 user.turn = false;
-let computer = new Player();
+let computer = new Player("computer");
 computer.turn = true;
 
-function gameProcessing(condition = null) {
-  if (condition) {
+function gameProcessing(option = null) {
+  if (option) {
   }
 }
 
 function dogame() {
   if (user.turn) {
     if (!user.initialMeldDone) {
-      initialMeld();
+      initialMeld(user);
     }
   } else if (computer.turn) {
+    if (!computer.initialMeldDone) {
+      initialMeld(computer);
+    }
   }
 }
 
-function initialMeld() {
-  const condition = 30;
-  gameProcessing(condition);
+function initialMeld(player) {
+  console.log(player.name);
+  // const condition = 30;
+  // gameProcessing(condition);
+  let group = player.group(30);
+
+  if (group.length > 0) {
+    group = group.flatMap((el) => el);
+    player.tiles.forEach((el, i) => {
+      const same = group.find((ol) => ol.id === el.id);
+
+      if (same) {
+        player.tiles.splice(i, 1);
+      }
+    });
+    player.initialMeldDone = true;
+    drawTiles();
+    console.log(player.tiles);
+  } else {
+    player.tiles = player.tiles.concat(deck.giveTiles(1));
+    drawTiles();
+  }
 }
 
 function gamePlay() {
@@ -53,6 +75,7 @@ function dividingTiles(number = 14) {
 }
 
 function drawTiles() {
+  cleanHtml();
   user.tiles.forEach((tile, i) => {
     userTileContainers[i].innerHTML = `<div class="tile">
       <span class="tile__value ${tile.color}">${tile.suit}</span>
@@ -62,6 +85,15 @@ function drawTiles() {
     computerTileContainers[i].innerHTML = `<div class="tile">
     <span class="tile__value ${tile.color}">${tile.suit}</span>
 </div>`;
+  });
+}
+
+function cleanHtml() {
+  userTileContainers.forEach((con) => {
+    con.innerHTML = ``;
+  });
+  computerTileContainers.forEach((con) => {
+    con.innerHTML = ``;
   });
 }
 

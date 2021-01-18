@@ -31,9 +31,18 @@ button {
   margin: 0 auto;
 }
 
+.result {
+  background-color: navy;
+  grid-template-rows: repeat(2, 8vh);
+}
+
 .table-row {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
+}
+
+.result .table-row {
+  grid-template-columns: repeat(15, 1fr);
 }
 
 .table-row:not(:last-child) {
@@ -109,4 +118,8 @@ button {
 
 .play-btn:active {
   background-color: rgb(255, 55, 20);
+}
+
+.highLight {
+  border: 3px solid tomato;
 }

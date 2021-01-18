@@ -3,9 +3,19 @@ import Player from "./player.js";
 
 const playBtn = document.querySelector(".play-btn");
 const userTileContainers = document.querySelectorAll(".me .tile-container");
+const userResultTileContainers = document.querySelectorAll(
+  ".result-me .tile-container"
+);
 const computerTileContainers = document.querySelectorAll(
   ".other .tile-container"
 );
+const computerResultTileContainers = document.querySelectorAll(
+  ".result-computer .tile-container"
+);
+const userTable = document.querySelector(".me");
+const computerTable = document.querySelector(".other");
+const userResultTable = document.querySelector(".result-me");
+const computerResultTable = document.querySelector(".result-computer");
 
 let start = false;
 const deck = new Deck();
@@ -21,7 +31,18 @@ function gameProcessing(option = null) {
   }
 }
 
+function whosTurn() {
+  if (user.turn) {
+    userTable.classList.add("highLight");
+    computerTable.classList.remove("highLight");
+  } else {
+    userTable.classList.remove("highLight");
+    computerTable.classList.add("highLight");
+  }
+}
+
 function dogame() {
+  whosTurn();
   if (user.turn) {
     if (!user.initialMeldDone) {
       initialMeld(user);
@@ -34,10 +55,10 @@ function dogame() {
 }
 
 function initialMeld(player) {
-  console.log(player.name);
   // const condition = 30;
   // gameProcessing(condition);
-  let group = player.group(30);
+  // let group = player.group(30);
+  let run = player.run(30);
 
   if (group.length > 0) {
     group = group.flatMap((el) => el);
@@ -49,8 +70,7 @@ function initialMeld(player) {
       }
     });
     player.initialMeldDone = true;
-    drawTiles();
-    console.log(player.tiles);
+    drawTiles(group, player.name);
   } else {
     player.tiles = player.tiles.concat(deck.giveTiles(1));
     drawTiles();
@@ -63,6 +83,7 @@ function gamePlay() {
   if (!start) {
     dividingTiles();
     start = true;
+    return;
   }
   dogame();
 }
@@ -74,7 +95,23 @@ function dividingTiles(number = 14) {
   drawTiles();
 }
 
-function drawTiles() {
+function drawResultTiles(result, player) {
+  if (player === "user") {
+    result.forEach((tile, i) => {
+      userResultTileContainers[i].innerHTML = `<div class="tile">
+    <span class="tile__value ${tile.color}">${tile.suit}</span>
+</div>`;
+    });
+  } else {
+    result.forEach((tile, i) => {
+      computerResultTileContainers[i].innerHTML = `<div class="tile">
+    <span class="tile__value ${tile.color}">${tile.suit}</span>
+</div>`;
+    });
+  }
+}
+
+function drawTiles(result = null, player = null) {
   cleanHtml();
   user.tiles.forEach((tile, i) => {
     userTileContainers[i].innerHTML = `<div class="tile">
@@ -86,6 +123,8 @@ function drawTiles() {
     <span class="tile__value ${tile.color}">${tile.suit}</span>
 </div>`;
   });
+  if (result === null && player === null) return;
+  drawResultTiles(result, player);
 }
 
 function cleanHtml() {

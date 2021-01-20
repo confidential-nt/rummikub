@@ -35,30 +35,46 @@ export default class Player {
   }
 
   run(condition = 0) {
-    let index = 0;
     let list = [];
-    let calList = this.tiles.slice();
+    let copyList = this.tiles.slice();
 
-    calList.sort((a, b) => a.value - b.value);
+    copyList.sort((a, b) => a.value - b.value);
     let usedNum = [];
 
-    let firstRunNum = calList[index].value;
-    usedNum.push(firstRunNum);
-    // this.tiles.forEach((el) => calList.push(el.value));
-    // console.log(calList);
+    for (let i = 0; i < copyList.length - 1; i++) {
+      if (copyList[i].value + 1 === copyList[i + 1].value) {
+        if (usedNum.includes(copyList[i].value)) {
+          list.push(copyList[i + 1]);
+        } else {
+          list.push(copyList[i], copyList[i + 1]);
+        }
 
-    for (let i = 0; i < calList.length - 1; i++) {
-      if (usedNum.includes(calList[i].value)) continue;
-      console.log(calList);
-      if (calList[i].value + 1 === calList[i + 1].value) {
-        list.push(calList[i], calList[i + 1]);
-        usedNum.push(calList[i], calList[i + 1]);
+        usedNum.push(copyList[i].value, copyList[i + 1].value);
       } else continue;
     }
 
-    const set = new Set(list);
-    console.log(set);
+    const valueList = [];
+    list.forEach((el) => valueList.push(el.value));
 
-    index++;
+    let sum = 0;
+    const sumPartial = [];
+    const elPartial = [];
+    for (let i = 0; i < valueList.length; i++) {
+      if (valueList[i] + 1 !== valueList[i + 1]) {
+        sum = sum + valueList[i];
+        sumPartial.push(sum);
+        elPartial.push(list.splice(0, i + 1)); //이 과정 위에서 해야할듯
+        sum = 0;
+        continue;
+      }
+
+      sum = sum + valueList[i];
+    }
+
+    console.log(sumPartial);
+    console.log(elPartial);
+
+    const overCondition = sumPartial.findIndex((el) => el >= condition);
+    return elPartial[overCondition];
   }
 }

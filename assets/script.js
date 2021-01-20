@@ -57,8 +57,9 @@ function dogame() {
 function initialMeld(player) {
   // const condition = 30;
   // gameProcessing(condition);
-  // let group = player.group(30);
+  let group = player.group(30);
   let run = player.run(30);
+  console.log(run);
 
   if (group.length > 0) {
     group = group.flatMap((el) => el);
@@ -66,7 +67,7 @@ function initialMeld(player) {
       const same = group.find((ol) => ol.id === el.id);
 
       if (same) {
-        player.tiles.splice(i, 1);
+        player.tiles.splice(i, 1); //얘네는 전부 game processing으로 묶고..switch와 객체 조건 알규먼트 사용하게 해서 하면 어떨까..
       }
     });
     player.initialMeldDone = true;

@@ -54,24 +54,33 @@ function dogame() {
   }
 }
 
+function processingLogic(logic, player) {
+  logic = logic.flatMap((el) => el);
+  player.tiles.forEach((el, i) => {
+    const same = logic.find((ol) => ol.id === el.id);
+
+    if (same) {
+      player.tiles.splice(i, 1); //얘네는 전부 game processing으로 묶고..switch와 객체 조건 알규먼트 사용하게 해서 하면 어떨까..
+    }
+  });
+  if (!player.initialMeldDone) player.initialMeldDone = true;
+
+  drawTiles(logic, player.name);
+}
+
 function initialMeld(player) {
-  // const condition = 30;
-  // gameProcessing(condition);
   let group = player.group(30);
   let run = player.run(30);
-  console.log(run);
 
-  if (group.length > 0) {
-    group = group.flatMap((el) => el);
-    player.tiles.forEach((el, i) => {
-      const same = group.find((ol) => ol.id === el.id);
-
-      if (same) {
-        player.tiles.splice(i, 1); //얘네는 전부 game processing으로 묶고..switch와 객체 조건 알규먼트 사용하게 해서 하면 어떨까..
-      }
-    });
-    player.initialMeldDone = true;
-    drawTiles(group, player.name);
+  if (group.length && run.length) {
+    const intergration = [...group, ...run];
+    processingLogic(intergration, player);
+  } else if (group.length || run.length) {
+    if (group.length > 0) {
+      processingLogic(group, player);
+    } else if (run.length > 0) {
+      processingLogic(run, player);
+    }
   } else {
     player.tiles = player.tiles.concat(deck.giveTiles(1));
     drawTiles();

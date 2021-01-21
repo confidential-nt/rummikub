@@ -36,20 +36,20 @@ export default class Player {
 
   run(condition = 0) {
     let list = [];
-    let copyList = this.tiles.slice();
+    let copiedTiles = this.tiles.slice();
 
-    copyList.sort((a, b) => a.value - b.value);
+    copiedTiles.sort((a, b) => a.value - b.value);
     let usedNum = [];
 
-    for (let i = 0; i < copyList.length - 1; i++) {
-      if (copyList[i].value + 1 === copyList[i + 1].value) {
-        if (usedNum.includes(copyList[i].value)) {
-          list.push(copyList[i + 1]);
+    for (let i = 0; i < copiedTiles.length - 1; i++) {
+      if (copiedTiles[i].value + 1 === copiedTiles[i + 1].value) {
+        if (usedNum.includes(copiedTiles[i].value)) {
+          list.push(copiedTiles[i + 1]);
         } else {
-          list.push(copyList[i], copyList[i + 1]);
+          list.push(copiedTiles[i], copiedTiles[i + 1]);
         }
 
-        usedNum.push(copyList[i].value, copyList[i + 1].value);
+        usedNum.push(copiedTiles[i].value, copiedTiles[i + 1].value);
       } else continue;
     }
 
@@ -59,22 +59,24 @@ export default class Player {
     let sum = 0;
     const sumPartial = [];
     const elPartial = [];
+    let currentIndex = 0;
     for (let i = 0; i < valueList.length; i++) {
       if (valueList[i] + 1 !== valueList[i + 1]) {
         sum = sum + valueList[i];
         sumPartial.push(sum);
-        elPartial.push(list.splice(0, i + 1)); //이 과정 위에서 해야할듯
+        elPartial.push(list.slice(currentIndex, i + 1));
         sum = 0;
+        currentIndex = i + 1;
         continue;
       }
 
       sum = sum + valueList[i];
     }
 
-    console.log(sumPartial);
-    console.log(elPartial);
-
     const overCondition = sumPartial.findIndex((el) => el >= condition);
-    return elPartial[overCondition];
+
+    if (elPartial[overCondition] && elPartial[overCondition].length >= 3)
+      return elPartial[overCondition];
+    else return [];
   }
 }

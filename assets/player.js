@@ -25,11 +25,11 @@ export default class Player {
         return acc + cur;
       }, 0);
 
-      if (sum >= condition) {
+      if (sum >= condition && areDifferentColor(result)) {
         list.push(result);
         usedNum.push(this.tiles[i].value);
       }
-    } //30을 컨디션 argument로 줘야할듯
+    }
 
     return list;
   }
@@ -78,5 +78,18 @@ export default class Player {
     if (elPartial[overCondition] && elPartial[overCondition].length >= 3)
       return elPartial[overCondition];
     else return [];
+  }
+}
+
+function areDifferentColor(arr) {
+  const target = arr.slice();
+  for (let i = 0; i < arr.length; i++) {
+    const base = arr[i];
+    target.splice(0, 1);
+    console.log(arr);
+    target.forEach((el, i) => {
+      console.log(base.color, el.color);
+      const result = base.color === el.color;
+    });
   }
 }

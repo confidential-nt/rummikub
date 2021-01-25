@@ -82,14 +82,19 @@ export default class Player {
 }
 
 function areDifferentColor(arr) {
+  let resultArr = [];
   const target = arr.slice();
   for (let i = 0; i < arr.length; i++) {
     const base = arr[i];
     target.splice(0, 1);
-    console.log(arr);
+
     target.forEach((el, i) => {
-      console.log(base.color, el.color);
       const result = base.color === el.color;
+      resultArr.push(result);
     });
   }
+
+  if (resultArr.some((el) => el === true)) return false;
+
+  return true;
 }

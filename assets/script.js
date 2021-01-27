@@ -26,8 +26,36 @@ user.turn = false;
 let computer = new Player("computer");
 computer.turn = true;
 
-function gameProcessing(option = null) {
-  if (option) {
+function handleNumberComb(player) {
+  const copiedPlayerTiles = player.tiles.slice();
+  const copiedTableTiles = player.onTableTiles.slice();
+  for (let i = 0; i < copiedPlayerTiles.length; i++) {
+    copiedTableTiles.push(copiedPlayerTiles[i]);
+    const run = player.run(0, copiedTableTiles);
+    if (run.find((el) => el.id === copiedPlayerTiles[i].id)) continue;
+
+    copiedTableTiles.splice(copiedTableTiles.length - 1, 1);
+
+    const group = player.group(0, copiedTableTiles);
+    if (group.find((el) => el.id === copiedPlayerTiles[i].id)) continue;
+
+    copiedTableTiles.splice(copiedTableTiles.length - 1, 1);
+  }
+}
+
+function gameProcessing(group, run, player) {
+  if (group.length && run.length) {
+    const intergration = [...group, ...run];
+    processingLogic(intergration, player);
+  } else if (group.length || run.length) {
+    if (group.length > 0) {
+      processingLogic(group, player);
+    } else if (run.length > 0) {
+      processingLogic(run, player);
+    }
+  } else {
+    player.tiles = player.tiles.concat(deck.giveTiles(1));
+    drawTiles();
   }
 }
 
@@ -46,10 +74,13 @@ function dogame() {
   if (user.turn) {
     if (!user.initialMeldDone) {
       initialMeld(user);
+      return;
     }
+    handleNumberComb(user);
   } else if (computer.turn) {
     if (!computer.initialMeldDone) {
       initialMeld(computer);
+      return;
     }
   }
 }
@@ -63,6 +94,8 @@ function processingLogic(logic, player) {
       player.tiles.splice(i, 1); //얘네는 전부 game processing으로 묶고..switch와 객체 조건 알규먼트 사용하게 해서 하면 어떨까..
     }
   });
+  player.onTableTiles.push(...logic);
+
   if (!player.initialMeldDone) player.initialMeldDone = true;
 
   drawTiles(logic, player.name);
@@ -72,22 +105,10 @@ function initialMeld(player) {
   let group = player.group(30);
   let run = player.run(30);
 
-  if (group.length && run.length) {
-    const intergration = [...group, ...run];
-    processingLogic(intergration, player);
-  } else if (group.length || run.length) {
-    if (group.length > 0) {
-      processingLogic(group, player);
-    } else if (run.length > 0) {
-      processingLogic(run, player);
-    }
-  } else {
-    player.tiles = player.tiles.concat(deck.giveTiles(1));
-    drawTiles();
-  }
+  gameProcessing(group, run, player);
 }
 
-function gamePlay() {
+function handlePlayBtn() {
   user.turn = !user.turn;
   computer.turn = !computer.turn;
   if (!start) {
@@ -146,4 +167,4 @@ function cleanHtml() {
   });
 }
 
-playBtn.addEventListener("click", gamePlay);
+playBtn.addEventListener("click", handlePlayBtn);

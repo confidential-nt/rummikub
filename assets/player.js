@@ -2,21 +2,20 @@ export default class Player {
   constructor(name) {
     this.name = name;
     this.tiles = [];
+    this.onTableTiles = [];
     this.score = null;
     this.turn;
     this.initialMeldDone = false;
   }
 
-  group(condition = 0) {
+  group(condition = 0, tiles = this.tiles) {
     let list = [];
 
     let usedNum = [];
 
-    for (let i = 0; i < this.tiles.length; i++) {
-      if (usedNum.includes(this.tiles[i].value)) continue;
-      const result = this.tiles.filter(
-        (el) => this.tiles[i].value === el.value
-      );
+    for (let i = 0; i < tiles.length; i++) {
+      if (usedNum.includes(tiles[i].value)) continue;
+      const result = tiles.filter((el) => tiles[i].value === el.value);
 
       let reduceRes = [];
       result.forEach((el) => reduceRes.push(el.value));
@@ -27,16 +26,16 @@ export default class Player {
 
       if (sum >= condition && areDifferentColor(result)) {
         list.push(result);
-        usedNum.push(this.tiles[i].value);
+        usedNum.push(tiles[i].value);
       }
     }
 
     return list;
   }
 
-  run(condition = 0) {
+  run(condition = 0, tiles = this.tiles) {
     let list = [];
-    let copiedTiles = this.tiles.slice();
+    let copiedTiles = tiles.slice();
 
     copiedTiles.sort((a, b) => a.value - b.value);
     let usedNum = [];

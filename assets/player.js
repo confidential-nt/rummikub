@@ -78,6 +78,11 @@ export default class Player {
       return elPartial[overCondition];
     else return [];
   }
+
+  getRequire(tiles = this.tiles) {
+    if (this.group(30, this.onTableTiles)) {
+    }
+  }
 }
 
 function areDifferentColor(arr) {

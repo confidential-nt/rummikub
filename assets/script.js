@@ -27,30 +27,28 @@ let computer = new Player("computer");
 computer.turn = true;
 
 function handleNumberComb(player) {
-  const copiedPlayerTiles = player.tiles.slice();
-  const copiedTableTiles = player.onTableTiles.slice();
-  for (let i = 0; i < copiedPlayerTiles.length; i++) {
-    copiedTableTiles.push(copiedPlayerTiles[i]);
-    const run = player.run(0, copiedTableTiles);
-    if (run.find((el) => el.id === copiedPlayerTiles[i].id)) continue;
-
-    copiedTableTiles.splice(copiedTableTiles.length - 1, 1);
-
-    const group = player.group(0, copiedTableTiles);
-    if (group.find((el) => el.id === copiedPlayerTiles[i].id)) continue;
-
-    copiedTableTiles.splice(copiedTableTiles.length - 1, 1);
-  }
+  // const copiedPlayerTiles = player.tiles.slice();
+  // const useArr = copiedPlayerTiles.concat(
+  //   player.runMatch[player.runMatch.length - 1]
+  // );
+  // console.log(useArr, player.runMatch);
+  let run = player.run();
+  console.log(run);
+  gameProcessing([], run, player);
 }
 
 function gameProcessing(group, run, player) {
   if (group.length && run.length) {
+    player.groupMatch.push(group.flatMap((el) => el));
+    player.runMatch.push(run);
     const intergration = [...group, ...run];
     processingLogic(intergration, player);
   } else if (group.length || run.length) {
     if (group.length > 0) {
+      player.groupMatch.push(group);
       processingLogic(group, player);
     } else if (run.length > 0) {
+      player.runMatch.push(run);
       processingLogic(run, player);
     }
   } else {
@@ -131,7 +129,7 @@ function drawResultTiles(result, player) {
     result.forEach((tile, i) => {
       userResultTileContainers[i].innerHTML = `<div class="tile">
     <span class="tile__value ${tile.color}">${tile.suit}</span>
-</div>`;
+</div>`; //얘때문에 제대로 안그려지고 없어지는 오류나는듯
     });
   } else {
     result.forEach((tile, i) => {

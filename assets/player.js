@@ -38,13 +38,13 @@ export default class Player {
   run(condition = 0, tiles = this.tiles) {
     let startNumberIndex;
     const lengthCondition = this.initialMeldDone ? 1 : 3;
+    const lastRunMatch = this.runMatch[this.runMatch.length - 1];
     let list = [];
     let copiedTiles = tiles.slice();
 
     copiedTiles.sort((a, b) => a.value - b.value);
     if (this.initialMeldDone) {
       startNumberIndex = copiedTiles.findIndex((el) => {
-        const lastRunMatch = this.runMatch[this.runMatch.length - 1];
         return (
           el.value === lastRunMatch[lastRunMatch.length - 1].value + 1 ||
           el.value === lastRunMatch[0].value - 1
@@ -55,41 +55,40 @@ export default class Player {
     if (startNumberIndex === -1) return [];
     let usedNum = [];
 
-    for (
-      let i = this.initialMeldDone ? startNumberIndex : 0;
-      i < copiedTiles.length - 1;
-      i++
+    if (
+      copiedTiles[startNumberIndex] &&
+      copiedTiles[startNumberIndex].value === lastRunMatch[0].value - 1
     ) {
-      if (copiedTiles[i].value + 1 === copiedTiles[i + 1].value) {
-        if (usedNum.includes(copiedTiles[i].value)) {
-          list.push(copiedTiles[i + 1]);
-        } else {
-          list.push(copiedTiles[i], copiedTiles[i + 1]);
-        }
+      console.log(copiedTiles[startNumberIndex], lastRunMatch[0].value - 1);
+      this.findRunMatchElDecre(copiedTiles, list, usedNum, startNumberIndex);
+    } else {
+      this.findRunMatchElIncre(copiedTiles, list, usedNum, startNumberIndex);
+    }
 
-        usedNum.push(copiedTiles[i].value, copiedTiles[i + 1].value);
-      } else continue;
+    if (!list.length) {
+      return copiedTiles[startNumberIndex];
     }
 
     const valueList = [];
     list.forEach((el) => valueList.push(el.value));
-
+    console.log(list);
     let sum = 0;
     const sumPartial = [];
     const elPartial = [];
     let currentIndex = 0;
-    for (let i = 0; i < valueList.length; i++) {
-      if (valueList[i] + 1 !== valueList[i + 1]) {
-        sum = sum + valueList[i];
-        sumPartial.push(sum);
-        elPartial.push(list.slice(currentIndex, i + 1));
-        sum = 0;
-        currentIndex = i + 1;
-        continue;
-      }
+    let decreaseIndex = false;
 
-      sum = sum + valueList[i];
-    }
+    if (list[0].value > list[list.length - 1].value) decreaseIndex = true;
+    this.runElSum(
+      valueList,
+      sum,
+      sumPartial,
+      elPartial,
+      list,
+      currentIndex,
+      decreaseIndex
+    );
+    console.log(sumPartial);
 
     const overCondition = sumPartial.findIndex((el) => el >= condition);
 
@@ -103,6 +102,89 @@ export default class Player {
 
   getRequire(tiles = this.tiles) {
     if (this.group(30, this.onTableTiles)) {
+    }
+  }
+
+  findRunMatchElIncre(copiedTiles, list, usedNum, startNumberIndex) {
+    for (
+      let i = this.initialMeldDone ? startNumberIndex : 0;
+      i < copiedTiles.length - 1;
+      i++
+    ) {
+      if (copiedTiles[i].value + 1 === copiedTiles[i + 1].value) {
+        this.runMatchElProcess(copiedTiles, list, i, usedNum);
+      } else continue;
+    }
+  }
+
+  findRunMatchElDecre(copiedTiles, list, usedNum, startNumberIndex) {
+    for (let i = startNumberIndex; i > 0; i--) {
+      if (copiedTiles[i].value - 1 === copiedTiles[i - 1].value) {
+        console.log(copiedTiles[i].value - 1, copiedTiles[i - 1].value);
+        this.runMatchElProcess(copiedTiles, list, i, usedNum, true);
+      } else continue;
+    }
+  }
+
+  runMatchElProcess(copiedTiles, list, i, usedNum, decreaseIndex = null) {
+    if (!decreaseIndex) {
+      if (usedNum.includes(copiedTiles[i].value)) {
+        list.push(copiedTiles[i + 1]);
+      } else {
+        list.push(copiedTiles[i], copiedTiles[i + 1]);
+      }
+
+      usedNum.push(copiedTiles[i].value, copiedTiles[i + 1].value);
+    }
+
+    if (decreaseIndex) {
+      if (usedNum.includes(copiedTiles[i].value)) {
+        list.push(copiedTiles[i - 1]);
+      } else {
+        list.push(copiedTiles[i], copiedTiles[i - 1]);
+      }
+
+      usedNum.push(copiedTiles[i].value, copiedTiles[i - 1].value);
+    }
+  }
+
+  runElSum(
+    valueList,
+    sum,
+    sumPartial,
+    elPartial,
+    list,
+    currentIndex,
+    decreaseIndex
+  ) {
+    if (!decreaseIndex) {
+      for (let i = 0; i < valueList.length; i++) {
+        if (valueList[i] + 1 !== valueList[i + 1]) {
+          sum = sum + valueList[i];
+          sumPartial.push(sum);
+          elPartial.push(list.slice(currentIndex, i + 1));
+          sum = 0;
+          currentIndex = i + 1;
+          continue;
+        }
+
+        sum = sum + valueList[i];
+      }
+    }
+    if (decreaseIndex) {
+      console.log(valueList);
+      for (let i = valueList.length - 1; i > 0; i--) {
+        if (valueList[i] - 1 !== valueList[i - 1]) {
+          sum = sum + valueList[i];
+          sumPartial.push(sum);
+          elPartial.push(list.slice(currentIndex, i - 1));
+          sum = 0;
+          currentIndex = i - 1;
+          continue;
+        }
+
+        sum = sum + valueList[i];
+      }
     }
   }
 }

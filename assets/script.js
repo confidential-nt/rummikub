@@ -3,15 +3,11 @@ import Player from "./player.js";
 
 const playBtn = document.querySelector(".play-btn");
 const userTileContainers = document.querySelectorAll(".me .tile-container");
-const userResultTileContainers = document.querySelectorAll(
-  ".result-me .tile-container"
-);
+
 const computerTileContainers = document.querySelectorAll(
   ".other .tile-container"
 );
-const computerResultTileContainers = document.querySelectorAll(
-  ".result-computer .tile-container"
-);
+
 const userTable = document.querySelector(".me");
 const computerTable = document.querySelector(".other");
 const userResultTable = document.querySelector(".result-me");
@@ -27,38 +23,25 @@ let computer = new Player("computer");
 computer.turn = true;
 
 function handleNumberComb(player) {
-  // const copiedPlayerTiles = player.tiles.slice();
-  // const useArr = copiedPlayerTiles.concat(
-  //   player.runMatch[player.runMatch.length - 1]
-  // );
-  // console.log(useArr, player.runMatch);
   let run = player.run();
-  console.log(run);
   gameProcessing([], run, player);
 }
 
 function gameProcessing(group, run, player) {
   pushIntoMatch(group, run, player);
   if (group.length && run.length) {
-    // player.groupMatch.push(group.flatMap((el) => el));
-    // player.runMatch.push(run);
-
     const intergration = [...group, ...run];
     processingLogic(intergration, player);
   } else if (group.length || run.length) {
     if (group.length > 0) {
-      // player.groupMatch.push(group.flatMap((el) => el));
       processingLogic(group, player);
     } else if (run.length > 0) {
-      // player.runMatch.push(run);
       processingLogic(run, player);
     }
   } else {
     player.tiles = player.tiles.concat(deck.giveTiles(1));
     drawTiles();
   }
-
-  console.log(player.runMatch, player.groupMatch);
 }
 
 function pushIntoMatch(group, run, player) {
@@ -145,7 +128,6 @@ function processingLogic(logic, player) {
   });
   player.onTableTiles.push(...logic);
 
-  console.log(player.onTableTiles);
   if (!player.initialMeldDone) player.initialMeldDone = true;
 
   drawTiles(logic, player);
@@ -176,9 +158,24 @@ function dividingTiles(number = 14) {
   drawTiles();
 }
 
-function drawResultTiles(result, player) {
+function drawResultTiles(player) {
+  const runMatchForDraw = player.runMatch.length
+    ? player.runMatch[player.runMatch.length - 1]
+    : [];
+  const groupMatchForDraw = player.groupMatch.length
+    ? player.groupMatch[player.groupMatch.length - 1]
+    : [];
+
   if (player.name === "user") {
-    userResultTable.innerHTML = player.onTableTiles
+    userResultTable.innerHTML = runMatchForDraw
+      .map(
+        (tile) => `<div class="tile">
+    <span class="tile__value ${tile.color}">${tile.suit}</span>
+</div>`
+      )
+      .join("");
+
+    userResultTable.innerHTML += groupMatchForDraw
       .map(
         (tile) => `<div class="tile">
     <span class="tile__value ${tile.color}">${tile.suit}</span>
@@ -186,7 +183,15 @@ function drawResultTiles(result, player) {
       )
       .join("");
   } else {
-    computerResultTable.innerHTML = player.onTableTiles
+    computerResultTable.innerHTML = runMatchForDraw
+      .map(
+        (tile) => `<div class="tile">
+   <span class="tile__value ${tile.color}">${tile.suit}</span>
+</div>`
+      )
+      .join("");
+
+    computerResultTable.innerHTML += groupMatchForDraw
       .map(
         (tile) => `<div class="tile">
    <span class="tile__value ${tile.color}">${tile.suit}</span>
@@ -194,7 +199,6 @@ function drawResultTiles(result, player) {
       )
       .join("");
   }
-  //서로 짝인것들끼리 그려지게
 }
 
 function drawTiles(result = null, player = null) {
@@ -210,7 +214,7 @@ function drawTiles(result = null, player = null) {
 </div>`;
   });
   if (result === null && player === null) return;
-  drawResultTiles(result, player);
+  drawResultTiles(player);
 }
 
 function cleanHtml() {

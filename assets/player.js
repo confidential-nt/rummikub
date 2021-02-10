@@ -50,7 +50,6 @@ export default class Player {
           el.value === lastRunMatch[0].value - 1
         );
       });
-      console.log(startNumberIndex, copiedTiles[startNumberIndex]);
     }
     if (startNumberIndex === -1) return [];
     let usedNum = [];
@@ -59,7 +58,6 @@ export default class Player {
       copiedTiles[startNumberIndex] &&
       copiedTiles[startNumberIndex].value === lastRunMatch[0].value - 1
     ) {
-      console.log(copiedTiles[startNumberIndex], lastRunMatch[0].value - 1);
       this.findRunMatchElDecre(copiedTiles, list, usedNum, startNumberIndex);
     } else {
       this.findRunMatchElIncre(copiedTiles, list, usedNum, startNumberIndex);
@@ -71,7 +69,6 @@ export default class Player {
 
     const valueList = [];
     list.forEach((el) => valueList.push(el.value));
-    console.log(list);
     let sum = 0;
     const sumPartial = [];
     const elPartial = [];
@@ -88,7 +85,6 @@ export default class Player {
       currentIndex,
       decreaseIndex
     );
-    console.log(sumPartial);
 
     const overCondition = sumPartial.findIndex((el) => el >= condition);
 
@@ -98,11 +94,6 @@ export default class Player {
     )
       return elPartial[overCondition].sort((a, b) => a.value - b.value);
     else return [];
-  }
-
-  getRequire(tiles = this.tiles) {
-    if (this.group(30, this.onTableTiles)) {
-    }
   }
 
   findRunMatchElIncre(copiedTiles, list, usedNum, startNumberIndex) {
@@ -120,7 +111,6 @@ export default class Player {
   findRunMatchElDecre(copiedTiles, list, usedNum, startNumberIndex) {
     for (let i = startNumberIndex; i > 0; i--) {
       if (copiedTiles[i].value - 1 === copiedTiles[i - 1].value) {
-        console.log(copiedTiles[i].value - 1, copiedTiles[i - 1].value);
         this.runMatchElProcess(copiedTiles, list, i, usedNum, true);
       } else break;
     }
@@ -172,7 +162,6 @@ export default class Player {
       }
     }
     if (decreaseIndex) {
-      console.log(valueList);
       for (let i = 0; i < valueList.length; i++) {
         if (valueList[i] - 1 !== valueList[i + 1]) {
           sum = sum + valueList[i];

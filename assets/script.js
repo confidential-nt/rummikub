@@ -38,22 +38,72 @@ function handleNumberComb(player) {
 }
 
 function gameProcessing(group, run, player) {
+  pushIntoMatch(group, run, player);
   if (group.length && run.length) {
-    player.groupMatch.push(group.flatMap((el) => el));
-    player.runMatch.push(run);
+    // player.groupMatch.push(group.flatMap((el) => el));
+    // player.runMatch.push(run);
+
     const intergration = [...group, ...run];
     processingLogic(intergration, player);
   } else if (group.length || run.length) {
     if (group.length > 0) {
-      player.groupMatch.push(group);
+      // player.groupMatch.push(group.flatMap((el) => el));
       processingLogic(group, player);
     } else if (run.length > 0) {
-      player.runMatch.push(run);
+      // player.runMatch.push(run);
       processingLogic(run, player);
     }
   } else {
     player.tiles = player.tiles.concat(deck.giveTiles(1));
     drawTiles();
+  }
+
+  console.log(player.runMatch, player.groupMatch);
+}
+
+function pushIntoMatch(group, run, player) {
+  const isGroupMatchEmpty = player.groupMatch.length;
+  const isRunMatchEmpty = player.runMatch.length;
+  const latestGroup = player.groupMatch[player.groupMatch.length - 1]
+    ? player.groupMatch[player.groupMatch.length - 1].slice()
+    : [];
+  const latestRun = player.runMatch[player.runMatch.length - 1]
+    ? player.runMatch[player.runMatch.length - 1].slice()
+    : [];
+
+  if (group.length && run.length) {
+    if (!isGroupMatchEmpty) {
+      player.groupMatch.push(group.flatMap((el) => el));
+    }
+    if (!isRunMatchEmpty) {
+      player.runMatch.push(run);
+    }
+    if (isGroupMatchEmpty) {
+      const groupMod = group.flatMap((el) => el);
+      latestGroup.push(...groupMod);
+      player.groupMatch.push(latestGroup);
+    }
+    if (isRunMatchEmpty) {
+      latestRun.push(...run);
+      latestRun.sort((a, b) => a.value - b.value);
+      player.runMatch.push(latestRun);
+    }
+  } else if (group.length) {
+    if (!isGroupMatchEmpty) {
+      player.groupMatch.push(group.flatMap((el) => el));
+    } else {
+      const groupMod = group.flatMap((el) => el);
+      latestGroup.push(...groupMod);
+      player.groupMatch.push(latestGroup);
+    }
+  } else if (run.length) {
+    if (!isRunMatchEmpty) {
+      player.runMatch.push(run);
+    } else {
+      latestRun.push(...run);
+      latestRun.sort((a, b) => a.value - b.value);
+      player.runMatch.push(latestRun);
+    }
   }
 }
 
@@ -144,7 +194,7 @@ function drawResultTiles(result, player) {
       )
       .join("");
   }
-  //RunMatch를 이용해서 그려야할듯..
+  //서로 짝인것들끼리 그려지게
 }
 
 function drawTiles(result = null, player = null) {

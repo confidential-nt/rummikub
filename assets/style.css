@@ -33,7 +33,9 @@ button {
 
 .result {
   background-color: navy;
-  grid-template-rows: repeat(2, 8vh);
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(3, 6vh);
+  grid-auto-rows: 5vh;
 }
 
 .table-row {

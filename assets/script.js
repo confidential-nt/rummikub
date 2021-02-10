@@ -80,6 +80,7 @@ function dogame() {
       initialMeld(computer);
       return;
     }
+    handleNumberComb(computer);
   }
 }
 
@@ -94,9 +95,10 @@ function processingLogic(logic, player) {
   });
   player.onTableTiles.push(...logic);
 
+  console.log(player.onTableTiles);
   if (!player.initialMeldDone) player.initialMeldDone = true;
 
-  drawTiles(logic, player.name);
+  drawTiles(logic, player);
 }
 
 function initialMeld(player) {
@@ -125,19 +127,24 @@ function dividingTiles(number = 14) {
 }
 
 function drawResultTiles(result, player) {
-  if (player === "user") {
-    result.forEach((tile, i) => {
-      userResultTileContainers[i].innerHTML = `<div class="tile">
+  if (player.name === "user") {
+    userResultTable.innerHTML = player.onTableTiles
+      .map(
+        (tile) => `<div class="tile">
     <span class="tile__value ${tile.color}">${tile.suit}</span>
-</div>`; //얘때문에 제대로 안그려지고 없어지는 오류나는듯
-    });
+</div>`
+      )
+      .join("");
   } else {
-    result.forEach((tile, i) => {
-      computerResultTileContainers[i].innerHTML = `<div class="tile">
-    <span class="tile__value ${tile.color}">${tile.suit}</span>
-</div>`;
-    });
+    computerResultTable.innerHTML = player.onTableTiles
+      .map(
+        (tile) => `<div class="tile">
+   <span class="tile__value ${tile.color}">${tile.suit}</span>
+</div>`
+      )
+      .join("");
   }
+  //RunMatch를 이용해서 그려야할듯..
 }
 
 function drawTiles(result = null, player = null) {

@@ -96,7 +96,7 @@ export default class Player {
       elPartial[overCondition] &&
       elPartial[overCondition].length >= lengthCondition
     )
-      return elPartial[overCondition];
+      return elPartial[overCondition].sort((a, b) => a.value - b.value);
     else return [];
   }
 
@@ -122,7 +122,7 @@ export default class Player {
       if (copiedTiles[i].value - 1 === copiedTiles[i - 1].value) {
         console.log(copiedTiles[i].value - 1, copiedTiles[i - 1].value);
         this.runMatchElProcess(copiedTiles, list, i, usedNum, true);
-      } else continue;
+      } else break;
     }
   }
 
@@ -173,13 +173,13 @@ export default class Player {
     }
     if (decreaseIndex) {
       console.log(valueList);
-      for (let i = valueList.length - 1; i > 0; i--) {
-        if (valueList[i] - 1 !== valueList[i - 1]) {
+      for (let i = 0; i < valueList.length; i++) {
+        if (valueList[i] - 1 !== valueList[i + 1]) {
           sum = sum + valueList[i];
           sumPartial.push(sum);
-          elPartial.push(list.slice(currentIndex, i - 1));
+          elPartial.push(list.slice(currentIndex, i + 1));
           sum = 0;
-          currentIndex = i - 1;
+          currentIndex = i + 1;
           continue;
         }
 

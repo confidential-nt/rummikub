@@ -23,8 +23,9 @@ let computer = new Player("computer");
 computer.turn = true;
 
 function handleNumberComb(player) {
+  let group = player.group();
   let run = player.run();
-  gameProcessing([], run, player);
+  gameProcessing(group, run, player);
 }
 
 function gameProcessing(group, run, player) {

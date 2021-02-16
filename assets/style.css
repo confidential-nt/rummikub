@@ -36,6 +36,7 @@ button {
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(3, 6vh);
   grid-auto-rows: 5vh;
+  justify-items: center;
 }
 
 .table-row {

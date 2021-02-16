@@ -11,14 +11,17 @@ export default class Player {
   }
 
   group(condition = 0, tiles = this.tiles) {
+    console.log(this.groupMatch, this.onTableTiles);
+    const lastGroupMatch = this.groupMatch[this.groupMatch.length - 1];
+    const comparedTiles = this.initialMeldDone ? this.onTableTiles : tiles;
     let list = [];
 
     let usedNum = [];
 
-    for (let i = 0; i < tiles.length; i++) {
-      if (usedNum.includes(tiles[i].value)) continue;
-      const result = tiles.filter((el) => tiles[i].value === el.value);
-
+    for (let i = 0; i < comparedTiles.length; i++) {
+      if (usedNum.includes(comparedTiles[i].value)) continue;
+      const result = tiles.filter((el) => comparedTiles[i].value === el.value);
+      if (this.initialMeldDone) console.log(result);
       let reduceRes = [];
       result.forEach((el) => reduceRes.push(el.value));
       if (reduceRes.length < 3) continue;
@@ -28,11 +31,11 @@ export default class Player {
 
       if (sum >= condition && areDifferentColor(result)) {
         list.push(result);
-        usedNum.push(tiles[i].value);
+        usedNum.push(comparedTiles[i].value);
       }
     }
 
-    return list;
+    return list; //중간에 있는 숫자인 경우 4개인가? 혹은 run match의 맨 앞. 맨 뒤 숫자와 같은가.
   }
 
   run(condition = 0, tiles = this.tiles) {
@@ -44,6 +47,7 @@ export default class Player {
 
     copiedTiles.sort((a, b) => a.value - b.value);
     if (this.initialMeldDone) {
+      if (!lastRunMatch) return []; //수정. 그룹만 가지고 있을 경우를 위해.
       startNumberIndex = copiedTiles.findIndex((el) => {
         return (
           el.value === lastRunMatch[lastRunMatch.length - 1].value + 1 ||

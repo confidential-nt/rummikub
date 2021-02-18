@@ -120,6 +120,7 @@ function dogame() {
 
 function processingLogic(logic, player) {
   logic = logic.flatMap((el) => el);
+  console.log(logic);
   player.tiles.forEach((el, i) => {
     const same = logic.find((ol) => ol.id === el.id);
 

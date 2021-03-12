@@ -22,8 +22,9 @@ export default class Deck {
 
   createDeck() {
     const numberTile = this.createNumberTile();
+
     const JOKER = [new Tile("J", 10, "red"), new Tile("J", 10, "black")]; //나중에 보강
-    return numberTile.concat(numberTile).concat(JOKER);
+    return numberTile.concat(this.createNumberTile()).concat(JOKER);
   }
 
   shuffle() {

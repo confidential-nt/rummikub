@@ -1,3 +1,6 @@
+//1. giveTile이 이상하게 작동. 원래 있는 걸 자꾸 가져옴...=> 애초에 댁을 잘못 생성하고 있었음..id 중복되게
+//2. differentColor 작동 제대로 안함....=> NICE 나오면 안되는데 나옴...=> 해결. RESULT 값이 이미 LASTGROUPMATCH에 있는 애임
+//3. lastgroupmatch는 이미 ontable에 있는것이므로 이거 고려해서 또 로직 설정...
 export default class Player {
   constructor(name) {
     this.name = name;
@@ -49,13 +52,17 @@ export default class Player {
   }
 
   findOtherGroupMatch(list, usedNum, lastGroupMatch, lastRunMatch) {
-    if (this.groupMatch.length) {
+    if (lastGroupMatch) {
+      console.log(this.tiles);
       const base = lastGroupMatch[0];
-      console.log(base);
+
       const result = this.tiles.filter((el) => el.value === base.value);
-      console.log(result);
-      if (areDifferentColor(result, lastGroupMatch)) {
-        list.concat(result);
+      console.log(lastGroupMatch, result, this.tiles);
+
+      if (!result.length) return;
+
+      if (areDifferentColor(result, lastGroupMatch, this.name)) {
+        list = list.concat(lastGroupMatch, result);
       }
     }
   }
@@ -204,11 +211,11 @@ export default class Player {
   }
 }
 
-function areDifferentColor(arr, lastGroupMatch) {
+function areDifferentColor(arr, lastGroupMatch, name) {
   let resultArr = [];
-  const target = arr.slice();
+  let target = arr.slice();
   if (lastGroupMatch) {
-    target.concat(lastGroupMatch);
+    target = target.concat(lastGroupMatch);
   }
   for (let i = 0; i < arr.length; i++) {
     const base = arr[i];
@@ -221,6 +228,6 @@ function areDifferentColor(arr, lastGroupMatch) {
   }
 
   if (resultArr.some((el) => el === true)) return false;
-
+  console.log(`${name}: nice!`);
   return true;
 }

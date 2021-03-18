@@ -1,7 +1,5 @@
-import Deck from "./deck.js";
+import { Deck } from "./deck.js";
 import Player from "./player.js";
-
-const ads = 1;
 
 const playBtn = document.querySelector(".play-btn");
 const userTileContainers = document.querySelectorAll(".me .tile-container");
@@ -15,10 +13,10 @@ const computerTable = document.querySelector(".other");
 const userResultTable = document.querySelector(".result-me");
 const computerResultTable = document.querySelector(".result-computer");
 
-let start = false;
+let start = true;
 const deck = new Deck();
 
-deck.shuffle();
+// deck.shuffle();
 
 let user = new Player("user");
 user.turn = false;
@@ -156,7 +154,7 @@ function handlePlayBtn() {
   dogame();
 }
 
-function dividingTiles(number = 14) {
+function dividingTiles(number = 3) {
   user.tiles = user.tiles.concat(deck.giveTiles(number));
   computer.tiles = computer.tiles.concat(deck.giveTiles(number));
 

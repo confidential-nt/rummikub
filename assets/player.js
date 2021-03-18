@@ -1,6 +1,8 @@
 //1. giveTile이 이상하게 작동. 원래 있는 걸 자꾸 가져옴...=> 애초에 댁을 잘못 생성하고 있었음..id 중복되게
 //2. differentColor 작동 제대로 안함....=> NICE 나오면 안되는데 나옴...=> 해결. RESULT 값이 이미 LASTGROUPMATCH에 있는 애임
 //3. lastgroupmatch는 이미 ontable에 있는것이므로 이거 고려해서 또 로직 설정...
+import { Tile } from "./deck.js";
+
 export default class Player {
   constructor(name) {
     this.name = name;
@@ -24,7 +26,7 @@ export default class Player {
 
     let usedNum = [];
     if (this.initialMeldDone)
-      this.findOtherGroupMatch(list, usedNum, lastGroupMatch, lastRunMatch);
+      list = this.findOtherGroupMatch(usedNum, lastGroupMatch, lastRunMatch);
     else {
       for (let i = 0; i < tiles.length; i++) {
         if (usedNum.includes(tiles[i].value)) continue;
@@ -51,7 +53,7 @@ export default class Player {
     return list; //중간에 있는 숫자인 경우 4개인가? 혹은 run match의 맨 앞. 맨 뒤 숫자와 같은가.
   }
 
-  findOtherGroupMatch(list, usedNum, lastGroupMatch, lastRunMatch) {
+  findOtherGroupMatch(usedNum, lastGroupMatch, lastRunMatch) {
     if (lastGroupMatch) {
       console.log(this.tiles);
       const base = lastGroupMatch[0];
@@ -61,9 +63,25 @@ export default class Player {
 
       if (!result.length) return;
 
-      if (areDifferentColor(result, lastGroupMatch, this.name)) {
-        list = list.concat(lastGroupMatch, result);
+      // if (areDifferentColor(result, lastGroupMatch, this.name)) {
+      //   list = list.concat(lastGroupMatch, result);
+      // }
+      const groupMatchColor = lastGroupMatch.map((el) => el.color);
+      let diffColor = [];
+      let checkedColor = [];
+      for (let i = 0; i < lastGroupMatch.length; i++) {
+        for (let j = 0; j < result.length; j++) {
+          if (groupMatchColor.includes(result[j].color)) continue;
+          if (result[j].color === lastGroupMatch[i].color) continue;
+          if (checkedColor.includes(result[j].color)) continue;
+          else {
+            diffColor.push(result[j]);
+            checkedColor.push(result[j].color);
+          }
+        }
       }
+
+      return diffColor;
     }
   }
 
@@ -226,6 +244,8 @@ function areDifferentColor(arr, lastGroupMatch, name) {
       resultArr.push(result);
     });
   }
+
+  console.log(resultArr);
 
   if (resultArr.some((el) => el === true)) return false;
   console.log(`${name}: nice!`);

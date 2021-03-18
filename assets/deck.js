@@ -3,8 +3,8 @@ const colors = ["black", "red", "blue", "orange"];
 
 let id = 0;
 
-export default class Deck {
-  constructor(deck = this.createDeck()) {
+export class Deck {
+  constructor(deck = temp) {
     this.deck = deck;
   }
 
@@ -42,7 +42,7 @@ export default class Deck {
   }
 }
 
-class Tile {
+export class Tile {
   constructor(suit, value, color) {
     this.suit = suit;
     this.value = value;
@@ -51,3 +51,14 @@ class Tile {
     id++;
   }
 }
+
+const temp = [
+  new Tile(10, 10, "orange"),
+  new Tile(10, 10, "red"),
+  new Tile(10, 10, "blue"),
+  new Tile(10, 10, "orange"),
+  new Tile(10, 10, "red"),
+  new Tile(10, 10, "blue"),
+  new Tile(10, 10, "black"),
+  new Tile(10, 10, "black"),
+];

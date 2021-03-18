@@ -1,6 +1,8 @@
 import Deck from "./deck.js";
 import Player from "./player.js";
 
+const ads = 1;
+
 const playBtn = document.querySelector(".play-btn");
 const userTileContainers = document.querySelectorAll(".me .tile-container");
 

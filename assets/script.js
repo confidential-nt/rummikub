@@ -154,7 +154,7 @@ function handlePlayBtn() {
   dogame();
 }
 
-function dividingTiles(number = 3) {
+function dividingTiles(number = 14) {
   user.tiles = user.tiles.concat(deck.giveTiles(number));
   computer.tiles = computer.tiles.concat(deck.giveTiles(number));
 

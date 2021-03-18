@@ -15,6 +15,7 @@ const computerResultTable = document.querySelector(".result-computer");
 
 let start = false;
 const deck = new Deck();
+
 deck.shuffle();
 
 let user = new Player("user");
@@ -137,9 +138,9 @@ function processingLogic(logic, player) {
 
 function initialMeld(player) {
   let group = player.group(30);
-  let run = player.run(30);
+  // let run = player.run(30);
 
-  gameProcessing(group, run, player);
+  gameProcessing(group, [], player);
 }
 
 function handlePlayBtn() {
@@ -153,7 +154,7 @@ function handlePlayBtn() {
   dogame();
 }
 
-function dividingTiles(number = 14) {
+function dividingTiles(number = 3) {
   user.tiles = user.tiles.concat(deck.giveTiles(number));
   computer.tiles = computer.tiles.concat(deck.giveTiles(number));
 
